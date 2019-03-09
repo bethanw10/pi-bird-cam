@@ -36,7 +36,7 @@ def calculateDifference(data1, data2):
     print()
 
 
-files =  sorted(os.listdir('./streams'))
+files =  sorted(os.listdir('../streams'))
 
 for i in range(int(len(files) / 2)):
     print(files[i * 2] + " " + files[i * 2 + 1])
@@ -44,8 +44,8 @@ for i in range(int(len(files) / 2)):
     baseFile = files[i * 2]
     currentFile = files[i * 2 + 1]
     
-    baseImage = plot.imread('./streams/' + baseFile)
-    currentImage = plot.imread('./streams/' + currentFile)
+    baseImage = plot.imread('../streams/' + baseFile)
+    currentImage = plot.imread('../streams/' + currentFile)
     
     calculateDifference(baseImage, currentImage)
     
