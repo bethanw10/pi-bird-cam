@@ -23,8 +23,6 @@ DELAY_S = 5
 TWEET_IMAGE_LIMIT = 4
 TWEET_TIME_LIMIT = 1
 
-files_to_upload = []
-oldest_capture_time = None
 
 def upload_to_twitter(filenames, capture_time):
     try:
@@ -44,10 +42,7 @@ def upload_to_twitter(filenames, capture_time):
             media_ids=','.join(media_ids))                 
         
     except Exception as e:
-        print('Error uploading files:' + str(e))
-        
-    finally:                
-        print(str(oldest_capture_time))
+        print('Error uploading files:' + str(e))              
         
 
 def should_run():
@@ -65,30 +60,41 @@ if __name__ == '__main__':
         access_token,
         access_token_secret
     )
-        
-    baseStream = getStreamImage(True)
+            
+    is_asleep = False    
+    files_to_upload = []
+    oldest_capture_time = None
+    base_stream = getStreamImage(True)
     
     while True:
         if not should_run() and not RUN_ALWAYS:
-            print("Sleeping for 1 minute")
+            if is_asleep is False:
+                print('Sleeping...')
+            
+            is_asleep = True
             time.sleep(60)
-            continue        
+            continue
+        else:
+            if is_asleep is True:
+                base_stream = getStreamImage(True)
                 
-        currentStream = getStreamImage(True)
+            is_alseep = False
+                
+        current_stream = getStreamImage(True)
         
-        if checkForMotion(baseStream, currentStream):
+        if checkForMotion(base_stream, current_stream):
             capture_time = datetime.datetime.now()
             filename = 'images/capture_' + format_time(capture_time) + '.jpg'
 
-            with picamera.PiCamera() as piCamera:
-                piCamera.capture(filename)
+            with picamera.PiCamera() as pi_camera:
+                pi_camera.capture(filename)
             
             print("Motion Detected")
             print('\t' + str(capture_time) + '\n')
                                     
             # Save streams for debugging
-            plot.imsave('streams/' + format_time(capture_time) + '_base.jpg', baseStream)            
-            plot.imsave('streams/' + format_time(capture_time) + '_current.jpg', currentStream)
+            plot.imsave('streams/' + format_time(capture_time) + '_base.jpg', base_stream)            
+            plot.imsave('streams/' + format_time(capture_time) + '_current.jpg', current_stream)
                       
             if oldest_capture_time is None:
                 oldest_capture_time = capture_time
@@ -102,7 +108,6 @@ if __name__ == '__main__':
                 oldest_capture_time = None
                 files_to_upload = []
                 
-        baseStream = currentStream 
         
         if oldest_capture_time is not None:
             time_difference = datetime.datetime.now() - oldest_capture_time
@@ -113,3 +118,5 @@ if __name__ == '__main__':
                 upload_to_twitter(files_to_upload, capture_time)
                 oldest_capture_time = None
                 files_to_upload = []
+                
+        base_stream = current_stream

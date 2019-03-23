@@ -11,8 +11,8 @@ from fractions import Fraction
 verbose = True     # False= Non True=Display showMessage
 
 # Motion Settings
-threshold = 35   # How Much a pixel has to change
-sensitivity = 650 # How Many pixels need to change for motion detection
+threshold = 50   # How Much a pixel has to change
+sensitivity = 500 # How Many pixels need to change for motion detection
 
 # Camera Settings
 testWidth = 128
@@ -68,6 +68,8 @@ def checkForMotion(data1, data2):
             break; #break outer loop.
     if pixChanges > sensitivity:
         motionDetected = True
+    elif pixChanges > 0:
+        print(pixChanges)
     return motionDetected 
     
 #-----------------------------------------------------------------------------------------------             
@@ -75,7 +77,7 @@ def getStreamImage(daymode):
     # Capture an image stream to memory based on daymode
     isDay = daymode
     with picamera.PiCamera() as camera:
-        time.sleep(.5)
+        #time.sleep(.5)
         camera.resolution = (testWidth, testHeight)
         with picamera.array.PiRGBArray(camera) as stream:
             if isDay:
