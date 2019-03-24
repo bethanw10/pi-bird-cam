@@ -7,13 +7,19 @@ import matplotlib.pyplot as plot
 from fractions import Fraction
 
 # Motion Settings
-threshold = 45   # How Much a pixel has to change
+threshold = 100  # How Much a pixel has to change
 
 # Camera Settings
 testWidth = 128
 testHeight = 80
 
-# Tool for calculating what the total number of changed pixels would have been for each stream
+STREAMS_FOLDER = '../streams/'
+
+'''
+Tool for calculating what the total number of changed pixels would have been for each stream.
+Before and after streams are saved to the streams folder when motion is detected.
+Useful for figuring out how to adjust sensitivity.
+'''
 def calculateDifference(data1, data2):
     # Find motion between two data streams based on sensitivity and threshold
     motionDetected = False
@@ -31,12 +37,12 @@ def calculateDifference(data1, data2):
                 numberOverThreshold += 1
                 pixChanges += 1
                 
-    print('Changed pixels: ' + str(pixChanges))
-    print('Average difference: ' + str(pixDiffs / numberOverThreshold))
+    print('Changed pixels: \t' + str(pixChanges))
+    print('Average difference: \t' + str(pixDiffs / numberOverThreshold))
     print()
 
 
-files =  sorted(os.listdir('../streams'))
+files =  sorted(os.listdir(STREAMS_FOLDER))
 
 for i in range(int(len(files) / 2)):
     print(files[i * 2] + " " + files[i * 2 + 1])
@@ -44,8 +50,8 @@ for i in range(int(len(files) / 2)):
     baseFile = files[i * 2]
     currentFile = files[i * 2 + 1]
     
-    baseImage = plot.imread('../streams/' + baseFile)
-    currentImage = plot.imread('../streams/' + currentFile)
+    baseImage = plot.imread(STREAMS_FOLDER + baseFile)
+    currentImage = plot.imread(STREAMS_FOLDER + currentFile)
     
     calculateDifference(baseImage, currentImage)
     

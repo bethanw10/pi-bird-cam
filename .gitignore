@@ -1,3 +1,7 @@
+auth.py
+images/
+streams/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
