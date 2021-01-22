@@ -14,8 +14,8 @@ from auth import (
 )
 
 # Only run during a certain period of the day
-START_HOUR = 7
-END_HOUR = 17
+START_HOUR = 8
+END_HOUR = 16
 RUN_ALWAYS = False
 
 DELAY_S = 5
@@ -50,7 +50,7 @@ def should_run():
 
 
 def format_time(datetime):
-    return str(datetime.strftime('%Y-%m-%d_%H-%M-%S'))
+    return str(datetime.strftime('%Y-%m-%d___%H-%M-%S'))
 
 
 if __name__ == '__main__':
@@ -61,12 +61,14 @@ if __name__ == '__main__':
         access_token_secret
     )
             
-    is_asleep = False    
+    print('-Starting-')
+    is_asleep = True    
     files_to_upload = []
     oldest_capture_time = None
     base_stream = getStreamImage(True)
     
     while True:
+        
         if not should_run() and not RUN_ALWAYS:
             if is_asleep is False:
                 print('Sleeping...')
@@ -76,9 +78,9 @@ if __name__ == '__main__':
             continue
         else:
             if is_asleep is True:
+                print('Running...')
                 base_stream = getStreamImage(True)
-                
-            is_alseep = False
+            is_asleep = False
                 
         current_stream = getStreamImage(True)
         
